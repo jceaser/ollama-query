@@ -6,7 +6,7 @@ Code to issue /api/show requests and display model details.
 Created by Thomas.Cherry.gmail.com
 */
 
-package lib
+package app
 
 import (
 	"encoding/json"

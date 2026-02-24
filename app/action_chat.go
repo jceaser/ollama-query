@@ -6,7 +6,7 @@ Code to issue /api/chat requests and handle streaming responses.
 Created by Thomas.Cherry.gmail.com
 */
 
-package lib
+package app
 
 import (
 	"bufio"
@@ -14,6 +14,8 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+
+	"github.com/jceaser/ollama-query/lib"
 )
 
 /*
@@ -102,7 +104,7 @@ func Chat(context AppContext, args ...string) (map[string]string, error) {
 		"messages": prompt,
 	}
 
-	jsonData, err := JsonFromStruct(requestBody)
+	jsonData, err := lib.JsonFromStruct(requestBody)
 	if err != nil {
 		return nil, err
 	}
@@ -118,9 +120,9 @@ func Chat(context AppContext, args ...string) (map[string]string, error) {
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
 		line := scanner.Text()
-		response, err := StructFromJson[ChatResponse]([]byte(line))
+		response, err := lib.StructFromJson[ChatResponse]([]byte(line))
 		if err != nil {
-			Log.Warn.Printf("Error unmarshaling response line: %v\n", err)
+			lib.Log.Warn.Printf("Error unmarshaling response line: %v\n", err)
 			continue
 		}
 		fmt.Fprintf(context.Output, "%s", response.Message.Content)
@@ -132,7 +134,7 @@ func Chat(context AppContext, args ...string) (map[string]string, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		Log.Error.Printf("%v\n", err.Error())
+		lib.Log.Error.Printf("%v\n", err.Error())
 	}
 	return nil, nil
 }

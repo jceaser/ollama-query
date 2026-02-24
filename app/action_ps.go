@@ -6,7 +6,7 @@ Code to issue /api/show requests and display model details.
 Created by Thomas.Cherry.gmail.com
 */
 
-package lib
+package app
 
 import (
 	"fmt"
@@ -14,6 +14,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/jceaser/ollama-query/lib"
 )
 
 /*
@@ -49,7 +51,7 @@ func ExecutePS(context AppContext, args ...string) (map[string]string, error) {
 
 	fmt.Fprintln(context.Output, strings.Repeat("*", 80))
 	fmt.Fprintln(context.Output, "Executing ps command...")
-	modelsResponse, err := StructFromJson[ModelsResponse](body)
+	modelsResponse, err := lib.StructFromJson[ModelsResponse](body)
 	if err != nil {
 		return nil, err
 	}

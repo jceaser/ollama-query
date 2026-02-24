@@ -6,13 +6,15 @@ Code to issue /api/show requests and display model details.
 Created by Thomas.Cherry.gmail.com
 */
 
-package lib
+package app
 
 import (
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/jceaser/ollama-query/lib"
 )
 
 /*
@@ -47,7 +49,7 @@ func ListModels(context AppContext, args ...string) (map[string]string, error) {
 
 	fmt.Fprintln(context.Output, strings.Repeat("*", 80))
 	fmt.Fprintln(context.Output, "Listing models...")
-	modelsResponse, err := StructFromJson[ModelsResponse](body)
+	modelsResponse, err := lib.StructFromJson[ModelsResponse](body)
 	if err != nil {
 		return nil, err
 	}

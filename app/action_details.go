@@ -6,7 +6,7 @@ Code to issue /api/show requests and display model details.
 Created by Thomas.Cherry.gmail.com
 */
 
-package lib
+package app
 
 import (
 	"bytes"
@@ -14,6 +14,8 @@ import (
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/jceaser/ollama-query/lib"
 )
 
 // ... existing code ...
@@ -119,7 +121,7 @@ func ShowModelDetails(context AppContext, params ...string) (map[string]string, 
 
 	nameOfModel := params[0]
 	modelName := ModelName{Model: nameOfModel}
-	jsonBytes, err := JsonFromStruct(modelName)
+	jsonBytes, err := lib.JsonFromStruct(modelName)
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +142,7 @@ func ShowModelDetails(context AppContext, params ...string) (map[string]string, 
 		return nil, err
 	}
 
-	modelDetails, err := StructFromJson[Modelfile](body)
+	modelDetails, err := lib.StructFromJson[Modelfile](body)
 	if err != nil {
 		return nil, err
 	}

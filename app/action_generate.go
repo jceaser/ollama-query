@@ -6,7 +6,7 @@ Code to issue /api/show requests and display model details.
 Created by Thomas.Cherry.gmail.com
 */
 
-package lib
+package app
 
 import (
 	"bufio"
@@ -16,6 +16,8 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+
+	"github.com/jceaser/ollama-query/lib"
 )
 
 type ResponseFromJson struct {
@@ -104,7 +106,7 @@ func GenerateText(context AppContext, args ...string) (map[string]string, error)
 	}
 
 	// Convert the request body to JSON
-	jsonData, err := JsonFromStruct(requestBody)
+	jsonData, err := lib.JsonFromStruct(requestBody)
 	if err != nil {
 		return nil, err
 	}
@@ -124,23 +126,23 @@ func GenerateText(context AppContext, args ...string) (map[string]string, error)
 	result := map[string]string{}
 	for scanner.Scan() {
 		line := scanner.Text()
-		response, err := StructFromJson[ResponseFromJson]([]byte(line))
+		response, err := lib.StructFromJson[ResponseFromJson]([]byte(line))
 		if err != nil {
-			Log.Warn.Printf("Error parsing response line: %v\n", err)
+			lib.Log.Warn.Printf("Error parsing response line: %v\n", err)
 			continue
 		}
-		fmt.Fprintf(context.Output, WrapText(Codes{ESC_GREEN}, "%s"), response.Response)
+		fmt.Fprintf(context.Output, lib.WrapText(lib.Codes{lib.ESC_GREEN}, "%s"), response.Response)
 		if response.Done {
 			if len(response.Context) > 0 {
 				jsonData, err := json.Marshal(response.Context)
 				if err != nil {
-					Log.Warn.Printf("Error marshaling context: %v\n", err)
+					lib.Log.Warn.Printf("Error marshaling context: %v\n", err)
 				} else {
 					result["context"] = string(jsonData)
 				}
 			}
 			if context.Verbose > 0 {
-				Log.Debug.Printf("%v\n", response)
+				lib.Log.Debug.Printf("%v\n", response)
 			}
 			fmt.Fprintf(context.Output, "\n\n")
 			break

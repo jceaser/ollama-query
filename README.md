@@ -20,6 +20,10 @@ This project provides a command-line interface for interacting with the Ollama s
 1. Run the executable.
 2. Follow the on-screen prompts to interact with the Ollama server.
 
+## Development
+
+    clear ; go build && ./ollama-query --action 'gen rnj-1:8b 2 * 3;gen rnj-1:8b what was that last answer?;help'
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit pull requests or report issues.

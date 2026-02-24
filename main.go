@@ -14,6 +14,7 @@ import (
 
 	"github.com/peterh/liner"
 
+	"github.com/jceaser/ollama-query/app"
 	"github.com/jceaser/ollama-query/lib"
 )
 
@@ -32,7 +33,7 @@ type ActionableItems []ActionableItem
 type ActionableItem struct {
 	Name       string
 	Triggers   []string
-	Action     lib.Action
+	Action     app.Action
 	Parameters string
 	Help       string
 }
@@ -45,7 +46,7 @@ func (a ActionableItems) Triggers() []string {
 	return triggers
 }
 
-func (a *ActionableItems) UpdateAction(key string, action lib.Action) int {
+func (a *ActionableItems) UpdateAction(key string, action app.Action) int {
 	for i, item := range *a {
 		if item.Name == key {
 			(*a)[i].Action = action
@@ -81,14 +82,14 @@ func (a ActionableItem) String() string {
 }
 
 var actions = ActionableItems{
-	{"Chat", []string{"chat"}, lib.Chat, "<model> <role> <prompt>", "Chat with model"},
+	{"Chat", []string{"chat"}, app.Chat, "<model> <role> <prompt>", "Chat with model"},
 	{"Exit", []string{"exit", "quit"}, Exit, "", "Exit the application"},
-	{"Generate", []string{"generate"}, lib.GenerateText, "<name> <prompt>", "Converse using context"},
+	{"Generate", []string{"generate"}, app.GenerateText, "<name> <prompt>", "Converse using context"},
 	{"Help", []string{"help", "menu"}, Exit, "", "Display this menu"},
-	{"List", []string{"ls", "list", "tags"}, lib.ListModels, "", "List Models"},
-	{"Processes", []string{"ps", "processes"}, lib.ExecutePS, "", "Execute ps command"},
-	{"Show", []string{"show", "details"}, lib.ShowModelDetails, "<name>", "Show Model Details"},
-	{"Version", []string{"version"}, lib.GetVersion, "", "Get Version"},
+	{"List", []string{"ls", "list", "tags"}, app.ListModels, "", "List Models"},
+	{"Processes", []string{"ps", "processes"}, app.ExecutePS, "", "Execute ps command"},
+	{"Show", []string{"show", "details"}, app.ShowModelDetails, "<name>", "Show Model Details"},
+	{"Version", []string{"version"}, app.GetVersion, "", "Get Version"},
 }
 
 // ***************************************************************************80
@@ -102,11 +103,11 @@ func isMatch(action string, commands []string) bool {
 	return false
 }
 
-func Exit(context lib.AppContext, args ...string) (map[string]string, error) {
+func Exit(context app.AppContext, args ...string) (map[string]string, error) {
 	os.Exit(0)
 	return nil, nil
 }
-func DisplayMenu(context lib.AppContext, args ...string) (map[string]string, error) {
+func DisplayMenu(context app.AppContext, args ...string) (map[string]string, error) {
 	displayMenu()
 	return nil, nil
 }
@@ -189,7 +190,7 @@ func main() {
 	//  initialized in main
 	actions.UpdateAction("Help", DisplayMenu)
 
-	context := lib.AppContext{
+	context := app.AppContext{
 		HostName: ollamaServerURL1,
 		Output:   os.Stdout,
 		Error:    os.Stderr,
